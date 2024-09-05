@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="images/brush-solid.svg" type="image/x-icon">
+</head>
+<body>
+    <div class="tools_bar">
+        <button class="tools" id="undo"><i class="fa fa-solid fa-rotate-left fa-2x"></i></button>
+    <button class="tools" id="redo"><i class="fa fa-solid fa-rotate-right fa-2x"></i></button>
+    <button class="tools" id="eraser"><i class="fa fa-solid fa-eraser fa-2x"></i></button>
+    </div>
+    <div class="element_container"> 
+        <div class="container">
+            <canvas width="1250px" height="550px" id="canvas">
+
+            </canvas>
+            <div class="cursor_tracker"></div>
+        </div>
+        
+       
+        
+        <div class="options_container">
+            <button class="options" id="Line"><i class="fa-solid fa-slash"></i></button>
+            <button class="options" id="Circle"><i class="fa-regular fa-circle"></i></button>
+            <button class="options" id="Brush"><i class="fa fa-solid fa-paintbrush"></i></button>
+            
+            <button class="clear">&times;</button>
+
+            <label for="color"></label>
+        
+        </div>
+        <div class="brush_width">
+            <input type="range" id="lineWidth" min="1" max="150" value="3">
+            <input type="color" id="color_picker">
+        </div>
+
+        
+    </div>
+        
+    
+    <div class="cursor_position_tracker">
+        <i class="fa fa-solid fa-arrow-pointer"></i>
+        <div class="cursor_position_tracker_text">
+
+        </div>
+    </div>
+    <script src="main.js"></script>
+    <script src="https://kit.fontawesome.com/3be6bc9332.js" crossorigin="anonymous"></script>
+</body>
+</html>
