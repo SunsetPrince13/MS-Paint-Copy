@@ -13,10 +13,17 @@
         <button class="tools" id="undo"><i class="fa fa-solid fa-rotate-left fa-2x"></i></button>
     <button class="tools" id="redo"><i class="fa fa-solid fa-rotate-right fa-2x"></i></button>
     <button class="tools" id="eraser"><i class="fa fa-solid fa-eraser fa-2x"></i></button>
+    <button id="popup" class="download_image"><i class="fa fa-solid fa-download"></i></button>
+    <div class="popup_download" id="popup">
+        <h3 id="popup">Picture name:</h3>
+        <input id="popup"type="text" class="filename">
+        <button id="popup"class="save">Save</button>
+        <button class="cancel">Cancel</button>
+    </div>
     </div>
     <div class="element_container"> 
         <div class="container">
-            <canvas width="1250px" height="550px" id="canvas">
+            <canvas width="1250px" height="470px" id="canvas">
 
             </canvas>
             <div class="cursor_tracker"></div>

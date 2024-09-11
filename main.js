@@ -6,7 +6,11 @@ const redo_btn = document.querySelector("#redo");
 const eraser = document.querySelector("#eraser");
 const colorPicker = document.querySelector("#color_picker");
 const cursor_tracker = document.querySelector(".cursor_tracker")
+const element = document.querySelector(".element_container")
+const download_btn = document.querySelector(".download_image");
+const download_popup = document.querySelector(".popup_download");
 
+var fileSaved = false;
 var lineSize = sizeRange.value;
 var currentOption = "";
 var colour = colorPicker.value;
@@ -17,6 +21,13 @@ let isErasing = false;
 let startPosX, startPosY = 0;
 let endPointX, endPointY = 0;
 
+const clearCircularRegion = (x, y) => {
+    canvasContent.arc(x, y, lineSize, 0, Math.PI*2)
+    canvasContent.stroke();
+    //canvasContent.clip();
+    canvasContent.clearRect(x - lineSize, y - lineSize, lineSize * 2, lineSize * 2);
+    //canvasContent.restore();
+}
 const clearEventListeners = () => {
     canvas.removeEventListener("mousedown", lineFunctionDown)
     canvas.removeEventListener("mouseup", lineFunctionUp)
@@ -74,6 +85,24 @@ const lineFunctionDown = (e) => {
     canvasContent.moveTo(startPosX, startPosY);
     canvasContent.stroke()
     canvasContent.strokeStyle = colour;
+
+}
+
+const trackerFollowMouse = (e) => {
+    
+    if(e.target.id == "canvas" && !isErasing){
+        var lengthx = e.pageX-lineSize/2;
+        var lengthy = e.pageY-lineSize/2;
+        cursor_tracker.style.display = "block";
+        cursor_tracker.style.left =lengthx +"px";
+        cursor_tracker.style.top = lengthy+"px"
+        cursor_tracker.style.width = lineSize+"px";
+        cursor_tracker.style.height = lineSize+"px";
+        
+        cursor_tracker.style.backgroundColor = colour;
+    }else {
+        cursor_tracker.style.display = "none";
+    }
 }
 
 const lineFunctionUp = (e) => {
@@ -138,6 +167,7 @@ const brushFunctionUp = () => {
 const erasingFunctionDown = (e) => {
     isErasing = true;
     isPressed = true;
+    //clearCircularRegion(e.pageX-lineSize/2, e.pageY-lineSize/2);
     canvasContent.clearRect(e.pageX-lineSize/2, e.pageY-lineSize/2, lineSize, lineSize);
 }
 
@@ -145,7 +175,8 @@ const erasingFunctionMove = (e) => {
     isErasing = true;
     if(isPressed){
         canvasContent.lineCap = "round";
-    canvasContent.clearRect(e.pageX-lineSize/2, e.pageY-lineSize/2, lineSize, lineSize);
+        //clearCircularRegion(e.pageX-lineSize/2, e.pageY-lineSize/2);
+        canvasContent.clearRect(e.pageX-lineSize/2, e.pageY-lineSize/2, lineSize, lineSize);
     }
     
 }
@@ -240,22 +271,9 @@ colorPicker.addEventListener("input", (e) => {
     colour = e.target.value;
 })
 
-document.addEventListener("mousemove", (e) => {
-    
-    if(e.target.id == "canvas" && !isErasing){
-        var lengthx = e.pageX-lineSize/2;
-        var lengthy = e.pageY-lineSize/2;
-        cursor_tracker.style.display = "block";
-        cursor_tracker.style.left =lengthx +"px";
-        cursor_tracker.style.top = lengthy+"px"
-        cursor_tracker.style.width = lineSize+"px";
-        cursor_tracker.style.height = lineSize+"px";
-        
-        cursor_tracker.style.backgroundColor = colour;
-    }else {
-        cursor_tracker.style.display = "none";
-    }
-})
+document.addEventListener("mousemove", trackerFollowMouse)
+
+document.addEventListener("wheel", trackerFollowMouse)
 
 canvas.addEventListener("mousemove", (e) => {
     var xVal = e.offsetX > 0 ? e.offsetX : 0;
@@ -263,3 +281,57 @@ canvas.addEventListener("mousemove", (e) => {
     document.querySelector(".cursor_position_tracker_text").innerHTML = `${xVal}, ${yVal}px`;
 })
 
+const downloadImage = (filename, path = "image/png") => {
+    var data = canvas.toDataURL(path);
+    var anchorDownload = document.createElement("a");
+    anchorDownload.href= data;
+    anchorDownload.download = filename;
+    document.body.appendChild(anchorDownload);
+    anchorDownload.click();
+
+}
+document.body.addEventListener("click", (e) => {
+        if(e.target.id != download_popup.id){
+            download_popup.style.display = "none";
+        }
+        
+    })
+
+
+
+const SaveContent = () => {
+    const input_btn = document.querySelector(".filename").textContent;
+    console.log(input_btn);
+    var drawingName = input_btn != null ? input_btn : "";
+    downloadImage(drawingName);
+}
+
+
+
+download_btn.addEventListener("click", () => {
+    download_popup.style.display ="block"
+    //download_popup.style.width = "400px"
+    //download_popup.style.height = "220px"
+    download_popup.addEventListener("keydown", (e) => {
+        if(e.key == "Enter") {
+            SaveContent();
+        }
+    })
+    
+})
+
+window.addEventListener("beforeunload", (e) => {
+    e.preventDefault();
+    alert("Consider saving changes before leaving?");
+})
+
+document.querySelector(".save").addEventListener("click", () => SaveContent())
+
+document.querySelectorAll("button").forEach(x => {
+    x.addEventListener("click", (e) => {
+        var bubble = document.createElement("span");
+        /*bubble.style.top = e.clientY+"px";
+        bubble.style.left = e.clientX+"px";*/
+        x.appendChild(bubble);
+    })
+})
